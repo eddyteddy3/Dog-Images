@@ -31,12 +31,25 @@ class ViewController: UIViewController {
             
             //to convert JSON into swift object, decodeable will be used
             let decoder = JSONDecoder()
-            do {
-                let imageData = try decoder.decode(ImageData.self, from: data)
-                print("Image Data: \(imageData)")
-            } catch {
-                print(error.localizedDescription)
+            let imageData = try! decoder.decode(ImageData.self, from: data)
+            
+            guard let imageURL = URL(string: imageData.message) else {
+                print("Could Not find URL")
+                return
             }
+            
+            let dataTask = URLSession.shared.dataTask(with: imageURL, completionHandler: { (data, response, error) in
+                
+                guard let data = data else { return }
+                print("DATA: \(data)")
+                DispatchQueue.main.async {
+                    self.imageView.image = UIImage(data: data)
+                }
+                
+            })
+            
+            dataTask.resume()
+            
             
         }
         
