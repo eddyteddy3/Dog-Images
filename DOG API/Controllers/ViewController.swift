@@ -29,7 +29,7 @@ class ViewController: UIViewController {
                 return
             }
             
-            //to convert JSON into swift object, decodeable will be used
+            //to convert JSON into swift object, decodeable will be used.
             let decoder = JSONDecoder()
             let imageData = try! decoder.decode(ImageData.self, from: data)
             
@@ -38,18 +38,13 @@ class ViewController: UIViewController {
                 return
             }
             
-            let dataTask = URLSession.shared.dataTask(with: imageURL, completionHandler: { (data, response, error) in
+            DogApiUrl.imageData(imageUrl: imageURL, completionHandler: { (image, error) in
                 
-                guard let data = data else { return }
-                print("DATA: \(data)")
                 DispatchQueue.main.async {
-                    self.imageView.image = UIImage(data: data)
+                    self.imageView.image = image
                 }
                 
             })
-            
-            dataTask.resume()
-            
             
         }
         
