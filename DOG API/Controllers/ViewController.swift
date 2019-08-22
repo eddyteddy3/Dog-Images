@@ -22,33 +22,20 @@ class ViewController: UIViewController {
         
         let apiURL = DogApiUrl.EndPoint.randomImage.url
         
-        let task = URLSession.shared.dataTask(with: apiURL) { (data, response, error) in
+        
+        DogApiUrl.requestRandomImages(ImageURL: apiURL) { (imageData, error) in
             
-            guard let data = data else {
-                print("Could not find data.")
+            guard let imageUrl = URL(string: imageData!.message) else {
+                print("Could not load URL.")
                 return
             }
             
-            //to convert JSON into swift object, decodeable will be used.
-            let decoder = JSONDecoder()
-            let imageData = try! decoder.decode(ImageData.self, from: data)
-            
-            guard let imageURL = URL(string: imageData.message) else {
-                print("Could Not find URL")
-                return
-            }
-            
-            DogApiUrl.imageData(imageUrl: imageURL, completionHandler: { (image, error) in
-                
+            DogApiUrl.imageData(imageUrl: imageUrl, completionHandler: { (image, error) in
                 DispatchQueue.main.async {
                     self.imageView.image = image
                 }
-                
             })
-            
         }
-        
-        task.resume()
         
     }
     
